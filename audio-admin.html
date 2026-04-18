@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رفع مقطع صوتي - متجر فريق مجالس الصالحين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #1e3a2f, #2d5a4a); color: white; padding: 25px; text-align: center; }
+        .form-section { padding: 25px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: #1e3a2f; }
+        input, textarea { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 16px; font-family: 'Cairo'; font-size: 14px; }
+        .btn-submit { background: linear-gradient(135deg, #1e3a2f, #2d5a4a); color: white; width: 100%; padding: 14px; border: none; border-radius: 40px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .alert { padding: 12px; border-radius: 16px; margin-bottom: 20px; display: none; }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-error { background: #f8d7da; color: #721c24; }
+        .loading { text-align: center; padding: 20px; display: none; }
+        .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 10px; margin-top: 15px; }
+        .progress-fill { width: 0%; height: 100%; background: #2d5a4a; border-radius: 10px; transition: width 0.3s; }
+        .footer { text-align: center; padding: 15px; font-size: 12px; color: #666; border-top: 1px solid #eee; margin-top: 20px; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #1e3a2f; color: white; padding: 12px 20px; border-radius: 50px; z-index: 9999; }
+        .toast-error { background: #dc3545; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-microphone-alt"></i> رفع مقطع صوتي</h1>
+        <p>ارفع ملفاً صوتياً أذان قرآن دروس</p>
+    </div>
+    <div class="form-section">
+        <div id="alert" class="alert"></div>
+        <div id="loading" class="loading"><i class="fas fa-spinner fa-spin"></i> جاري الرفع... <div class="progress-bar"><div class="progress-fill"></div></div></div>
+
+        <div class="form-group">
+            <label>اسم المقطع</label>
+            <input type="text" id="audioName" placeholder="مثال: أذان الفجر">
+        </div>
+        <div class="form-group">
+            <label>وصف المقطع اختياري</label>
+            <textarea id="audioDesc" rows="2" placeholder="وصف قصير"></textarea>
+        </div>
+        <div class="form-group">
+            <label>ملف الصوت MP3</label>
+            <input type="file" id="audioFile" accept="audio/mpeg,audio/mp3">
+        </div>
+        <button class="btn-submit" onclick="publishAudio()"><i class="fas fa-upload"></i> نشر المقطع</button>
+    </div>
+    <div class="footer">
+        <p><i class="fas fa-copyright"></i> جميع الحقوق محفوظة - متجر فريق مجالس الصالحين</p>
+    </div>
+</div>
+
+<script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    
+    const supabaseUrl = 'https://mkbicibgbbuphzkbztgz.supabase.co'
+    const supabaseKey = 'sb_publishable_7TRSLYRvjwCtyg4sLt1vZA_riJg5r_8'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    
+    let audioFile = null
+    
+    document.getElementById('audioFile').onchange = (e) => {
+        if (e.target.files[0]) audioFile = e.target.files[0]
+    }
+    
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div')
+        toast.className = `toast ${type === 'error' ? 'toast-error' : ''}`
+        toast.innerHTML = message
+        document.body.appendChild(toast)
+        setTimeout(() => toast.remove(), 3000)
+    }
+    
+    window.publishAudio = async () => {
+        const name = document.getElementById('audioName').value.trim()
+        const description = document.getElementById('audioDesc').value.trim()
+        if (!name) return showToast('الرجاء إدخال اسم المقطع', 'error')
+        if (!audioFile) return showToast('الرجاء اختيار ملف صوتي', 'error')
+        
+        const loadingDiv = document.getElementById('loading')
+        const progressFill = document.querySelector('.progress-fill')
+        loadingDiv.style.display = 'block'
+        progressFill.style.width = '50%'
+        
+        try {
+            const fileExt = audioFile.name.split('.').pop()
+            const fileName = `${Date.now()}_${name.replace(/[^a-zA-Z0-9]/g, '_')}.${fileExt}`
+            const filePath = `audio/${fileName}`
+            
+            const { error: uploadError } = await supabase.storage.from('apps').upload(filePath, audioFile)
+            if (uploadError) throw uploadError
+            
+            progressFill.style.width = '80%'
+            const { data: { publicUrl } } = supabase.storage.from('apps').getPublicUrl(filePath)
+            
+            const { error: insertError } = await supabase.from('audio_files').insert([{ name, description, file_url: publicUrl, downloads: 0 }])
+            if (insertError) throw insertError
+            
+            progressFill.style.width = '100%'
+            showToast('تم نشر المقطع الصوتي بنجاح', 'success')
+            setTimeout(() => { window.location.href = 'index.html' }, 2000)
+            
+        } catch (err) {
+            loadingDiv.style.display = 'none'
+            progressFill.style.width = '0%'
+            showToast('فشل النشر ' + err.message, 'error')
+        }
+    }
+    
+    async function checkAdmin() {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { window.location.href = 'index.html'; return }
+        const { data: admin } = await supabase.from('admins').select('email').eq('email', user.email).single()
+        if (!admin) { showToast('غير مصرح لك', 'error'); window.location.href = 'index.html'; }
+    }
+    checkAdmin()
+</script>
+</body>
+</html>

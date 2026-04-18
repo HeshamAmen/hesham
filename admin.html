@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>نشر تطبيق - متجر فريق مجالس الصالحين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #1e3a2f, #2d5a4a); color: white; padding: 25px; text-align: center; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 20px; background: #f8f9fa; }
+        .stat-card { text-align: center; padding: 15px; background: white; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .stat-number { font-size: 28px; font-weight: 800; color: #2d5a4a; }
+        .stat-label { font-size: 13px; color: #666; margin-top: 5px; }
+        .form-section { padding: 25px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: #1e3a2f; }
+        input, textarea, select { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 16px; font-family: 'Cairo'; font-size: 14px; }
+        .preview { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+        .preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 16px; border: 2px solid #ddd; cursor: pointer; }
+        .logo-preview { width: 60px; height: 60px; }
+        .banner-preview { width: 100%; height: 120px; object-fit: cover; border-radius: 16px; }
+        .btn-submit { background: linear-gradient(135deg, #1e3a2f, #2d5a4a); color: white; width: 100%; padding: 14px; border: none; border-radius: 40px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-secondary { background: #6c757d; margin-top: 5px; }
+        .alert { padding: 12px; border-radius: 16px; margin-bottom: 20px; display: none; }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-error { background: #f8d7da; color: #721c24; }
+        .loading { text-align: center; padding: 20px; display: none; }
+        .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 10px; margin-top: 15px; }
+        .progress-fill { width: 0%; height: 100%; background: #2d5a4a; border-radius: 10px; transition: width 0.3s; }
+        .footer { text-align: center; padding: 15px; font-size: 12px; color: #666; border-top: 1px solid #eee; margin-top: 20px; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #1e3a2f; color: white; padding: 12px 20px; border-radius: 50px; z-index: 9999; animation: fadeInUp 0.3s ease; }
+        .toast-error { background: #dc3545; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-cloud-upload-alt"></i> لوحة التحكم</h1>
+        <p>نشر تطبيقات - رفع شعار - إحصائيات</p>
+    </div>
+    
+    <div class="stats" id="statsContainer">
+        <div class="stat-card"><div class="stat-number" id="statApps">-</div><div class="stat-label">التطبيقات</div></div>
+        <div class="stat-card"><div class="stat-number" id="statDownloads">-</div><div class="stat-label">إجمالي التحميلات</div></div>
+        <div class="stat-card"><div class="stat-number" id="statUsers">-</div><div class="stat-label">المستخدمين</div></div>
+        <div class="stat-card"><div class="stat-number" id="statAudio">-</div><div class="stat-label">المقاطع الصوتية</div></div>
+    </div>
+    
+    <div class="form-section">
+        <div id="alert" class="alert"></div>
+        <div id="loading" class="loading"><i class="fas fa-spinner fa-spin"></i> جاري النشر... <div class="progress-bar"><div class="progress-fill"></div></div></div>
+
+        <h3><i class="fas fa-palette"></i> إعدادات المتجر</h3>
+        <div class="form-group">
+            <label>شعار المتجر (أيقونة)</label>
+            <input type="file" id="logoFile" accept="image/*">
+            <div id="logoPreview" class="preview"></div>
+        </div>
+        <div class="form-group">
+            <label>البانر العلوي (صورة رئيسية)</label>
+            <input type="file" id="bannerFile" accept="image/*">
+            <div id="bannerPreview" class="preview"></div>
+        </div>
+        <button class="btn-submit btn-secondary" onclick="uploadSettings()"><i class="fas fa-save"></i> حفظ إعدادات المتجر</button>
+        
+        <hr style="margin: 25px 0;">
+        
+        <h3><i class="fas fa-mobile-alt"></i> نشر تطبيق جديد</h3>
+        <div class="form-group">
+            <label>اسم التطبيق</label>
+            <input type="text" id="appName" placeholder="مثال: أذكار المسلم">
+        </div>
+        <div class="form-group">
+            <label>وصف قصير (يظهر في البطاقة)</label>
+            <input type="text" id="shortDesc" placeholder="وصف مختصر بـ 70 حرف">
+        </div>
+        <div class="form-group">
+            <label>وصف كامل</label>
+            <textarea id="fullDesc" rows="4" placeholder="وصف تفصيلي للتطبيق"></textarea>
+        </div>
+        <div class="form-group">
+            <label>التصنيف</label>
+            <select id="category">
+                <option value="dini">ديني</option>
+                <option value="educational">تعليمي</option>
+                <option value="tools">أدوات</option>
+                <option value="games">ألعاب</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>أيقونة التطبيق</label>
+            <input type="file" id="iconFile" accept="image/*">
+            <div id="iconPreview" class="preview"></div>
+        </div>
+        <div class="form-group">
+            <label>ملف APK</label>
+            <input type="file" id="apkFile" accept=".apk">
+            <div id="apkInfo" class="preview"></div>
+        </div>
+        <div class="form-group">
+            <label>صور إضافية (اختر عدة)</label>
+            <input type="file" id="imagesFiles" accept="image/*" multiple>
+            <div id="imagesPreview" class="preview"></div>
+        </div>
+        <button class="btn-submit" onclick="publishApp()"><i class="fas fa-rocket"></i> نشر التطبيق</button>
+    </div>
+    <div class="footer">
+        <p><i class="fas fa-copyright"></i> جميع الحقوق محفوظة - متجر فريق مجالس الصالحين</p>
+    </div>
+</div>
+
+<script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    
+    const supabaseUrl = 'https://mkbicibgbbuphzkbztgz.supabase.co'
+    const supabaseKey = 'sb_publishable_7TRSLYRvjwCtyg4sLt1vZA_riJg5r_8'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    
+    let iconFile = null, apkFile = null, imagesFiles = []
+    let logoFile = null, bannerFile = null
+    
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div')
+        toast.className = `toast ${type === 'error' ? 'toast-error' : ''}`
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`
+        document.body.appendChild(toast)
+        setTimeout(() => toast.remove(), 3000)
+    }
+    
+    async function loadStats() {
+        const { count: appsCount } = await supabase.from('apps').select('*', { count: 'exact', head: true })
+        const { data: apps } = await supabase.from('apps').select('downloads')
+        const totalDownloads = apps?.reduce((sum, app) => sum + (app.downloads || 0), 0) || 0
+        const { count: usersCount } = await supabase.auth.admin?.listUsers() || { count: 0 }
+        const { count: audioCount } = await supabase.from('audio_files').select('*', { count: 'exact', head: true })
+        
+        document.getElementById('statApps').innerText = appsCount || 0
+        document.getElementById('statDownloads').innerText = totalDownloads.toLocaleString()
+        document.getElementById('statUsers').innerText = usersCount || 0
+        document.getElementById('statAudio').innerText = audioCount || 0
+    }
+    
+    async function loadSettings() {
+        const { data } = await supabase.from('settings').select('*').eq('id', 1).single()
+        if (data) {
+            if (data.logo_url) {
+                document.getElementById('logoPreview').innerHTML = `<img src="${data.logo_url}" class="preview-img logo-preview">`
+            }
+            if (data.banner_url) {
+                document.getElementById('bannerPreview').innerHTML = `<img src="${data.banner_url}" class="banner-preview">`
+            }
+        }
+    }
+    
+    document.getElementById('logoFile').onchange = (e) => {
+        if (e.target.files[0]) {
+            logoFile = e.target.files[0]
+            const reader = new FileReader()
+            reader.onload = (event) => { document.getElementById('logoPreview').innerHTML = `<img src="${event.target.result}" class="preview-img logo-preview">` }
+            reader.readAsDataURL(logoFile)
+        }
+    }
+    
+    document.getElementById('bannerFile').onchange = (e) => {
+        if (e.target.files[0]) {
+            bannerFile = e.target.files[0]
+            const reader = new FileReader()
+            reader.onload = (event) => { document.getElementById('bannerPreview').innerHTML = `<img src="${event.target.result}" class="banner-preview">` }
+            reader.readAsDataURL(bannerFile)
+        }
+    }
+    
+    document.getElementById('iconFile').onchange = (e) => {
+        if (e.target.files[0]) {
+            iconFile = e.target.files[0]
+            const reader = new FileReader()
+            reader.onload = (event) => { document.getElementById('iconPreview').innerHTML = `<img src="${event.target.result}" class="preview-img">` }
+            reader.readAsDataURL(iconFile)
+        }
+    }
+    
+    document.getElementById('apkFile').onchange = (e) => {
+        if (e.target.files[0]) {
+            apkFile = e.target.files[0]
+            const size = (apkFile.size / (1024 * 1024)).toFixed(2)
+            document.getElementById('apkInfo').innerHTML = `<p>حجم ${size} ميجابايت</p>`
+        }
+    }
+    
+    document.getElementById('imagesFiles').onchange = (e) => {
+        imagesFiles = Array.from(e.target.files)
+        const previewDiv = document.getElementById('imagesPreview')
+        previewDiv.innerHTML = ''
+        imagesFiles.forEach(file => {
+            const reader = new FileReader()
+            reader.onload = (event) => {
+                const img = document.createElement('img')
+                img.src = event.target.result
+                img.className = 'preview-img'
+                previewDiv.appendChild(img)
+            }
+            reader.readAsDataURL(file)
+        })
+    }
+    
+    window.uploadSettings = async () => {
+        const loadingDiv = document.getElementById('loading')
+        const progressFill = document.querySelector('.progress-fill')
+        loadingDiv.style.display = 'block'
+        progressFill.style.width = '30%'
+        
+        try {
+            let logoUrl = null, bannerUrl = null
+            if (logoFile) {
+                const logoPath = `settings/logo_${Date.now()}.png`
+                await supabase.storage.from('apps').upload(logoPath, logoFile)
+                logoUrl = supabase.storage.from('apps').getPublicUrl(logoPath).data.publicUrl
+                progressFill.style.width = '60%'
+            }
+            if (bannerFile) {
+                const bannerPath = `settings/banner_${Date.now()}.png`
+                await supabase.storage.from('apps').upload(bannerPath, bannerFile)
+                bannerUrl = supabase.storage.from('apps').getPublicUrl(bannerPath).data.publicUrl
+                progressFill.style.width = '80%'
+            }
+            
+            const { error } = await supabase.from('settings').upsert({ id: 1, logo_url: logoUrl, banner_url: bannerUrl, updated_at: new Date() })
+            if (error) throw error
+            
+            progressFill.style.width = '100%'
+            showToast('تم حفظ إعدادات المتجر', 'success')
+            setTimeout(() => window.location.reload(), 1500)
+        } catch (err) {
+            loadingDiv.style.display = 'none'
+            progressFill.style.width = '0%'
+            showToast('فشل الحفظ ' + err.message, 'error')
+        }
+    }
+    
+    window.publishApp = async () => {
+        const name = document.getElementById('appName').value.trim()
+        const shortDesc = document.getElementById('shortDesc').value.trim()
+        const fullDesc = document.getElementById('fullDesc').value.trim()
+        const category = document.getElementById('category').value
+        
+        if (!name || !fullDesc) return showToast('الاسم والوصف الكامل مطلوبان', 'error')
+        if (!apkFile) return showToast('يرجى اختيار ملف APK', 'error')
+        
+        const loadingDiv = document.getElementById('loading')
+        const progressFill = document.querySelector('.progress-fill')
+        loadingDiv.style.display = 'block'
+        progressFill.style.width = '10%'
+        
+        try {
+            let iconUrl = ''
+            if (iconFile) {
+                const iconPath = `icons/${Date.now()}_${iconFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`
+                await supabase.storage.from('apps').upload(iconPath, iconFile)
+                iconUrl = supabase.storage.from('apps').getPublicUrl(iconPath).data.publicUrl
+                progressFill.style.width = '30%'
+            }
+            
+            const apkPath = `files/${Date.now()}_${apkFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`
+            await supabase.storage.from('apps').upload(apkPath, apkFile)
+            const apkUrl = supabase.storage.from('apps').getPublicUrl(apkPath).data.publicUrl
+            progressFill.style.width = '60%'
+            
+            const { data: app, error: insertError } = await supabase
+                .from('apps')
+                .insert([{ 
+                    name, 
+                    description: fullDesc, 
+                    short_description: shortDesc,
+                    category: category,
+                    icon_url: iconUrl, 
+                    file_url: apkUrl, 
+                    file_size: (apkFile.size / (1024 * 1024)).toFixed(2), 
+                    version: '1.0' 
+                }])
+                .select()
+            
+            if (insertError) throw insertError
+            
+            progressFill.style.width = '85%'
+            
+            for (let i = 0; i < imagesFiles.length; i++) {
+                const imgPath = `screenshots/${Date.now()}_${i}_${imagesFiles[i].name.replace(/[^a-zA-Z0-9.]/g, '_')}`
+                const { error } = await supabase.storage.from('apps').upload(imgPath, imagesFiles[i])
+                if (!error) {
+                    const imgUrl = supabase.storage.from('apps').getPublicUrl(imgPath).data.publicUrl
+                    await supabase.from('app_images').insert([{ app_id: app[0].id, image_url: imgUrl }])
+                }
+            }
+            
+            progressFill.style.width = '100%'
+            showToast('تم نشر التطبيق بنجاح', 'success')
+            setTimeout(() => window.location.href = 'index.html', 2000)
+            
+        } catch (err) {
+            loadingDiv.style.display = 'none'
+            progressFill.style.width = '0%'
+            showToast('فشل النشر ' + err.message, 'error')
+        }
+    }
+    
+    async function checkAdmin() {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { window.location.href = 'index.html'; return }
+        const { data: admin } = await supabase.from('admins').select('email').eq('email', user.email).single()
+        if (!admin) { showToast('غير مصرح لك', 'error'); window.location.href = 'index.html'; }
+    }
+    
+    loadStats()
+    loadSettings()
+    checkAdmin()
+</script>
+</body>
+</html>

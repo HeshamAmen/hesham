@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>صفحتي الشخصية - متجر فريق مجالس الصالحين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%); }
+        .navbar { background: linear-gradient(135deg, #1e3a2f, #2d5a4a); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .navbar a { color: white; text-decoration: none; font-size: 18px; font-weight: 600; }
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        .profile-card { background: white; border-radius: 25px; padding: 30px; text-align: center; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
+        .profile-avatar { width: 100px; height: 100px; background: #2d5a4a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: white; font-size: 50px; }
+        .profile-email { font-size: 18px; color: #666; margin-bottom: 20px; }
+        .delete-account { background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; margin-top: 10px; }
+        .section { background: white; border-radius: 25px; padding: 25px; margin-bottom: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
+        .section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #1e3a2f; }
+        .comment-item, .favorite-item { border-bottom: 1px solid #eee; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .favorite-item { cursor: pointer; }
+        .favorite-item:hover { background: #f9f9f9; }
+        .loading { text-align: center; padding: 40px; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #1e3a2f; color: white; padding: 12px 20px; border-radius: 50px; z-index: 9999; animation: fadeInUp 0.3s ease; }
+        .toast-error { background: #dc3545; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { .navbar { flex-direction: column; text-align: center; gap: 10px; } }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="index.html"><i class="fas fa-arrow-right"></i> العودة للمتجر</a>
+    <span><i class="fas fa-mosque"></i> متجر فريق مجالس الصالحين</span>
+</div>
+
+<div class="container" id="container">
+    <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+</div>
+
+<script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    
+    const supabaseUrl = 'https://mkbicibgbbuphzkbztgz.supabase.co'
+    const supabaseKey = 'sb_publishable_7TRSLYRvjwCtyg4sLt1vZA_riJg5r_8'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    
+    let currentUser = null
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]')
+    
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div')
+        toast.className = `toast ${type === 'error' ? 'toast-error' : ''}`
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`
+        document.body.appendChild(toast)
+        setTimeout(() => toast.remove(), 3000)
+    }
+    
+    async function loadProfile() {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { window.location.href = 'index.html'; return }
+        currentUser = user
+        
+        const { data: comments } = await supabase.from('comments').select('*').eq('user_email', user.email).order('created_at', { ascending: false })
+        const { data: favoriteApps } = await supabase.from('apps').select('*').in('id', favorites)
+        
+        let commentsHtml = ''
+        if (comments && comments.length > 0) {
+            comments.forEach(c => {
+                commentsHtml += `
+                    <div class="comment-item">
+                        <div>
+                            <div style="font-weight:600;">${c.comment}</div>
+                            <div style="font-size:12px;color:#888;">التقييم: ${c.rating} نجوم</div>
+                        </div>
+                        <button onclick="deleteMyComment(${c.id})" style="background:#dc3545;color:white;border:none;padding:5px15px;border-radius:50px;cursor:pointer;">حذف</button>
+                    </div>
+                `
+            })
+        } else {
+            commentsHtml = '<p>لا توجد تعليقات</p>'
+        }
+        
+        let favoritesHtml = ''
+        if (favoriteApps && favoriteApps.length > 0) {
+            favoriteApps.forEach(app => {
+                favoritesHtml += `
+                    <div class="favorite-item" onclick="window.location.href='app-details.html?id=${app.id}'">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:40px;height:40px;background:#2d5a4a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;">${app.icon_url ? `<img src="${app.icon_url}" style="width:100%;height:100%;border-radius:10px;">` : '<i class="fas fa-mobile-alt"></i>'}</div>
+                            <div><strong>${app.name}</strong><br><span style="font-size:12px;color:#888;">${app.downloads || 0} تحميل</span></div>
+                        </div>
+                        <i class="fas fa-heart" style="color:#dc3545;"></i>
+                    </div>
+                `
+            })
+        } else {
+            favoritesHtml = '<p>لا توجد تطبيقات مفضلة</p>'
+        }
+        
+        const html = `
+            <div class="profile-card">
+                <div class="profile-avatar"><i class="fas fa-user"></i></div>
+                <h3>${user.email}</h3>
+                <div class="profile-email">${user.email}</div>
+                <button class="delete-account" onclick="deleteAccount()"><i class="fas fa-trash"></i> حذف حسابي</button>
+            </div>
+            <div class="section">
+                <div class="section-title"><i class="fas fa-comments"></i> تعليقاتي</div>
+                ${commentsHtml}
+            </div>
+            <div class="section">
+                <div class="section-title"><i class="fas fa-heart"></i> تطبيقاتي المفضلة</div>
+                ${favoritesHtml}
+            </div>
+        `
+        document.getElementById('container').innerHTML = html
+    }
+    
+    window.deleteMyComment = async (commentId) => {
+        if (!confirm('هل تريد حذف تعليقك؟')) return
+        const { error } = await supabase.from('comments').delete().eq('id', commentId)
+        if (error) { showToast(error.message, 'error'); return }
+        showToast('تم حذف تعليقك', 'success')
+        setTimeout(() => window.location.reload(), 1000)
+    }
+    
+    window.deleteAccount = async () => {
+        if (!confirm('تحذير! حذف حسابك سيؤدي إلى حذف جميع تعليقاتك نهائياً. هل أنت متأكد؟')) return
+        await supabase.from('comments').delete().eq('user_email', currentUser.email)
+        const { error } = await supabase.auth.admin?.deleteUser(currentUser.id)
+        if (error) { showToast('حدث خطأ', 'error'); return }
+        await supabase.auth.signOut()
+        showToast('تم حذف حسابك', 'success')
+        setTimeout(() => { window.location.href = 'index.html' }, 1500)
+    }
+    
+    loadProfile()
+</script>
+</body>
+</html>

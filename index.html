@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>متجر فريق مجالس الصالحين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
+            --bg-card: #ffffff;
+            --text-primary: #1a2a3a;
+            --text-secondary: #6c757d;
+            --header-bg: linear-gradient(135deg, #1e3a2f, #2d5a4a);
+            --shadow: 0 5px 20px rgba(0,0,0,0.08);
+            --border: #eee;
+            --gold: #ffc107;
+        }
+        
+        body.dark {
+            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --bg-card: #1f1f2f;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --header-bg: linear-gradient(135deg, #0f3460, #1a1a2e);
+            --shadow: 0 5px 20px rgba(0,0,0,0.3);
+            --border: #2a2a3a;
+        }
+        
+        body { font-family: 'Cairo', sans-serif; background: var(--bg-primary); transition: all 0.3s ease; }
+        
+        /* Header */
+        .header { background: var(--header-bg); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .logo { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .logo-img { height: 50px; width: auto; max-width: 150px; object-fit: contain; border-radius: 12px; }
+        .logo h1 { font-size: 22px; display: flex; align-items: center; gap: 10px; }
+        .logo h1 i { font-size: 28px; }
+        
+        /* Banner */
+        .hero { margin: 20px; border-radius: 25px; overflow: hidden; position: relative; }
+        .banner-img { width: 100%; height: 200px; object-fit: cover; }
+        .hero-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; background: rgba(0,0,0,0.5); padding: 20px; border-radius: 20px; width: 80%; }
+        .hero-content h2 { font-size: 24px; margin-bottom: 10px; }
+        .hero-content p { font-size: 14px; }
+        
+        /* Search */
+        .search-box { margin: 20px; text-align: center; }
+        .search-box input { width: 90%; max-width: 500px; padding: 15px 20px; border-radius: 60px; border: none; font-family: 'Cairo', sans-serif; outline: none; font-size: 16px; box-shadow: var(--shadow); }
+        
+        /* Filter Bar */
+        .filter-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px; }
+        .filter-btn { background: var(--bg-card); border: 2px solid var(--border); padding: 8px 20px; border-radius: 50px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s; color: var(--text-primary); }
+        .filter-btn.active { background: #2d5a4a; color: white; border-color: #2d5a4a; }
+        .sort-btn { background: var(--bg-card); border: 2px solid var(--border); padding: 8px 15px; border-radius: 50px; font-size: 13px; cursor: pointer; transition: 0.3s; color: var(--text-primary); display: inline-flex; align-items: center; gap: 5px; }
+        .sort-btn:hover { background: #2d5a4a; color: white; }
+        
+        /* Categories */
+        .categories { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px; }
+        .cat-btn { background: transparent; border: 2px solid var(--border); padding: 8px 20px; border-radius: 50px; font-size: 14px; cursor: pointer; transition: 0.3s; color: var(--text-primary); }
+        .cat-btn.active { background: #2d5a4a; color: white; border-color: #2d5a4a; }
+        
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; justify-content: center; margin: 20px; flex-wrap: wrap; }
+        .tab-btn { background: transparent; border: 2px solid var(--border); padding: 10px 25px; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; color: var(--text-primary); }
+        .tab-btn.active { background: #2d5a4a; color: white; border-color: #2d5a4a; }
+        
+        /* Apps Grid */
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        
+        /* App Card */
+        .app-card { background: var(--bg-card); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); cursor: pointer; transition: all 0.3s ease; }
+        .app-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
+        .app-card-header { padding: 20px; display: flex; gap: 15px; border-bottom: 1px solid var(--border); }
+        .app-icon { width: 70px; height: 70px; border-radius: 18px; background: linear-gradient(135deg, #2d5a4a, #1e3a2f); display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; overflow: hidden; flex-shrink: 0; }
+        .app-icon img { width: 100%; height: 100%; border-radius: 18px; object-fit: cover; }
+        .app-info { flex: 1; }
+        .app-name { font-weight: 800; font-size: 18px; color: var(--text-primary); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .pinned-icon { color: var(--gold); font-size: 14px; }
+        .category-tag { font-size: 10px; background: var(--border); padding: 2px 8px; border-radius: 20px; color: var(--text-secondary); }
+        .stars { color: var(--gold); font-size: 13px; margin: 5px 0; }
+        .rating-text { color: var(--text-secondary); font-size: 12px; margin-right: 5px; }
+        .short-desc { font-size: 13px; color: var(--text-secondary); margin: 8px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
+        .app-card-footer { padding: 12px 20px; background: rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; }
+        .downloads { display: flex; align-items: center; gap: 5px; color: #2d5a4a; font-weight: 600; font-size: 14px; }
+        .rating-count { color: var(--text-secondary); font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        .favorite-icon { color: #dc3545; cursor: pointer; }
+        
+        /* Audio Card */
+        .audio-card { background: var(--bg-card); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: var(--shadow); transition: 0.3s; }
+        .audio-header { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; flex-wrap: wrap; }
+        .audio-icon { width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, #2d5a4a, #1e3a2f); display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; }
+        .audio-name { font-weight: 800; font-size: 18px; color: var(--text-primary); }
+        .audio-desc { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+        audio { width: 100%; height: 40px; margin: 10px 0; border-radius: 10px; }
+        .audio-download { background: #2d5a4a; color: white; border: none; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 13px; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .audio-download:hover { background: #1e3a2f; }
+        
+        /* Social Links */
+        .social-links { display: flex; gap: 15px; align-items: center; }
+        .social-icon { color: white; font-size: 22px; transition: 0.3s; }
+        .social-icon:hover { transform: scale(1.1); color: var(--gold); }
+        .dark-mode-toggle, .profile-link { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 50px; cursor: pointer; transition: 0.3s; }
+        .dark-mode-toggle:hover, .profile-link:hover { background: rgba(255,255,255,0.3); }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--bg-card); border-radius: 25px; padding: 30px; max-width: 400px; width: 90%; text-align: center; }
+        .modal-content input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid var(--border); border-radius: 10px; font-family: 'Cairo', sans-serif; background: var(--bg-card); color: var(--text-primary); }
+        .modal-content button { background: #2d5a4a; color: white; border: none; padding: 10px 20px; border-radius: 50px; margin: 5px; cursor: pointer; }
+        .loading { text-align: center; padding: 40px; color: var(--text-secondary); }
+        .footer { text-align: center; padding: 25px; color: var(--text-secondary); font-size: 13px; border-top: 1px solid var(--border); margin-top: 30px; }
+        
+        /* Back to top */
+        .back-to-top { position: fixed; bottom: 20px; left: 20px; background: #2d5a4a; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: 0.3s; z-index: 99; border: none; }
+        .back-to-top.show { opacity: 1; }
+        
+        /* Toast */
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #1e3a2f; color: white; padding: 12px 20px; border-radius: 50px; z-index: 9999; animation: fadeInUp 0.3s ease; font-family: 'Cairo', sans-serif; font-size: 14px; }
+        .toast-error { background: #dc3545; }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header { flex-direction: column; text-align: center; }
+            .logo { justify-content: center; }
+            .hero-content h2 { font-size: 18px; }
+            .hero-content p { font-size: 12px; }
+            .apps-grid { grid-template-columns: 1fr; }
+            .filter-bar { gap: 8px; }
+            .filter-btn, .sort-btn { padding: 6px 12px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+<div class="header">
+    <div class="logo">
+        <img id="logoImg" class="logo-img" style="display: none;" alt="شعار المتجر">
+        <h1 id="logoText"><i class="fas fa-mosque"></i> متجر فريق مجالس الصالحين</h1>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
+        <button class="profile-link" onclick="window.location.href='profile.html'"><i class="fas fa-user"></i></button>
+        <div class="social-links">
+            <a href="https://wa.me/967782521126" target="_blank" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.facebook.com/share/1Bht6SYwfj/" target="_blank" class="social-icon"><i class="fab fa-facebook"></i></a>
+        </div>
+        <div id="authSection"><button class="btn btn-login" onclick="showLoginModal()">دخول تسجيل</button></div>
+    </div>
+</div>
+
+<div class="hero">
+    <img id="bannerImg" class="banner-img" style="display: none;" alt="بانر المتجر">
+    <div class="hero-content" id="heroContent">
+        <h2>مرحباً بك في المتجر</h2>
+        <p>تطبيقات إسلامية مفيدة وأصوات أذان</p>
+    </div>
+</div>
+
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="ابحث عن تطبيق أو صوت..." onkeyup="filterContent()">
+</div>
+
+<div class="categories" id="categoriesContainer">
+    <button class="cat-btn active" data-category="all">الكل</button>
+    <button class="cat-btn" data-category="dini">ديني</button>
+    <button class="cat-btn" data-category="educational">تعليمي</button>
+    <button class="cat-btn" data-category="tools">أدوات</button>
+    <button class="cat-btn" data-category="games">ألعاب</button>
+</div>
+
+<div class="filter-bar">
+    <button class="sort-btn" onclick="sortApps('downloads')"><i class="fas fa-download"></i> الأكثر تحميلاً</button>
+    <button class="sort-btn" onclick="sortApps('rating')"><i class="fas fa-star"></i> الأعلى تقييماً</button>
+    <button class="sort-btn" onclick="sortApps('newest')"><i class="fas fa-clock"></i> الأحدث</button>
+</div>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('apps')"><i class="fas fa-mobile-alt"></i> التطبيقات</button>
+    <button class="tab-btn" onclick="switchTab('audio')"><i class="fas fa-headphones"></i> أصوات الأذان</button>
+</div>
+
+<div class="container">
+    <div id="appsGrid" class="apps-grid"></div>
+    <div id="audioGrid" class="apps-grid" style="display: none;"></div>
+    <div id="loadingIndicator" class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+</div>
+
+<div class="footer">
+    <p><i class="fas fa-copyright"></i> جميع الحقوق محفوظة - متجر فريق مجالس الصالحين</p>
+</div>
+
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-user-circle"></i> دخول إنشاء حساب</h3>
+        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
+        <input type="password" id="loginPassword" placeholder="كلمة السر">
+        <button onclick="loginWithPassword()"><i class="fas fa-sign-in-alt"></i> دخول</button>
+        <button onclick="register()"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
+        <button onclick="showForgotPassword()"><i class="fas fa-key"></i> نسيت كلمة السر</button>
+        <button onclick="closeLoginModal()" style="background:#ccc;"><i class="fas fa-times"></i> إغلاق</button>
+    </div>
+</div>
+
+<div id="forgotModal" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-key"></i> استعادة كلمة السر</h3>
+        <input type="email" id="resetEmail" placeholder="البريد الإلكتروني">
+        <button onclick="resetPassword()"><i class="fas fa-paper-plane"></i> إرسال رابط الاستعادة</button>
+        <button onclick="closeForgotModal()" style="background:#ccc;"><i class="fas fa-times"></i> إلغاء</button>
+    </div>
+</div>
+
+<script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    
+    const supabaseUrl = 'https://mkbicibgbbuphzkbztgz.supabase.co'
+    const supabaseKey = 'sb_publishable_7TRSLYRvjwCtyg4sLt1vZA_riJg5r_8'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    
+    let currentUser = null
+    let isAdmin = false
+    let currentTab = 'apps'
+    let allApps = []
+    let allAudio = []
+    let currentSort = 'rating'
+    let currentCategory = 'all'
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]')
+    
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div')
+        toast.className = `toast ${type === 'error' ? 'toast-error' : ''}`
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`
+        document.body.appendChild(toast)
+        setTimeout(() => toast.remove(), 3000)
+    }
+    
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }) }
+    window.scrollToTop = scrollToTop
+    
+    window.addEventListener('scroll', () => {
+        const btn = document.querySelector('.back-to-top')
+        if (window.scrollY > 300) btn.classList.add('show')
+        else btn.classList.remove('show')
+    })
+    
+    async function loadSettings() {
+        const { data } = await supabase.from('settings').select('*').eq('id', 1).single()
+        if (data) {
+            if (data.logo_url) {
+                document.getElementById('logoImg').src = data.logo_url
+                document.getElementById('logoImg').style.display = 'block'
+                document.getElementById('logoText').style.display = 'none'
+            }
+            if (data.banner_url) {
+                document.getElementById('bannerImg').src = data.banner_url
+                document.getElementById('bannerImg').style.display = 'block'
+                document.getElementById('heroContent').style.display = 'none'
+            }
+        }
+    }
+    
+    async function checkUser() {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+            currentUser = user
+            const { data: admin } = await supabase.from('admins').select('email').eq('email', user.email).single()
+            isAdmin = !!admin
+            const adminBtns = isAdmin ? `
+                <button class="btn" style="background:#ffd700;color:#1e3a2f;" onclick="window.location.href='admin.html'"><i class="fas fa-cloud-upload-alt"></i> نشر تطبيق</button>
+                <button class="btn" style="background:#ffd700;color:#1e3a2f;" onclick="window.location.href='audio-admin.html'"><i class="fas fa-microphone-alt"></i> نشر صوت</button>
+            ` : ''
+            document.getElementById('authSection').innerHTML = `<div class="user-info" style="display:flex;align-items:center;gap:15px;"><span><i class="fas fa-user"></i> ${user.email}</span>${adminBtns}<button class="btn btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</button></div>`
+        }
+        loadContent()
+    }
+    
+    async function loadApps() {
+    let query = supabase.from('apps').select('*')
+    if (currentSort === 'downloads') query = query.order('downloads', { ascending: false })
+    else if (currentSort === 'rating') query = query.order('rating_sum', { ascending: false })
+    else query = query.order('pinned', { ascending: false }).order('created_at', { ascending: false })
+    
+    const { data } = await query
+    allApps = data || []
+    
+    if (currentCategory !== 'all') {
+        allApps = allApps.filter(app => app.category === currentCategory)
+    }
+    return allApps
+}
+    
+    async function loadAudio() {
+        const { data } = await supabase.from('audio_files').select('*').order('created_at', { ascending: false })
+        allAudio = data || []
+        return allAudio
+    }
+    
+    async function loadContent() {
+        document.getElementById('loadingIndicator').style.display = 'block'
+        await Promise.all([loadApps(), loadAudio()])
+        document.getElementById('loadingIndicator').style.display = 'none'
+        renderCurrentTab()
+    }
+    
+    function toggleFavorite(appId) {
+        if (favorites.includes(appId)) {
+            favorites = favorites.filter(id => id !== appId)
+            showToast('تم الإزالة من المفضلة', 'success')
+        } else {
+            favorites.push(appId)
+            showToast('تم الإضافة إلى المفضلة', 'success')
+        }
+        localStorage.setItem('favorites', JSON.stringify(favorites))
+        renderCurrentTab()
+    }
+    
+    function renderApps() {
+        const container = document.getElementById('appsGrid')
+        if (!allApps.length) { container.innerHTML = '<div class="loading"><i class="fas fa-folder-open"></i> لا توجد تطبيقات</div>'; return }
+        
+        container.innerHTML = allApps.map(app => {
+            const avgRating = app.rating_count > 0 ? (app.rating_sum / app.rating_count).toFixed(1) : 0
+            let stars = ''
+            for (let i = 1; i <= 5; i++) stars += `<i class="fas fa-star${i <= Math.round(avgRating) ? '' : '-o'}"></i>`
+            const shortDesc = app.short_description || (app.description ? (app.description.length > 70 ? app.description.substring(0, 70) + '...' : app.description) : 'لا يوجد وصف')
+            const isFavorite = favorites.includes(app.id)
+            const categoryNames = { dini: 'ديني', educational: 'تعليمي', tools: 'أدوات', games: 'ألعاب' }
+            
+            return `
+                <div class="app-card">
+                    <div class="app-card-header" onclick="window.location.href='app-details.html?id=${app.id}'">
+                        <div class="app-icon">${app.icon_url ? `<img src="${app.icon_url}">` : '<i class="fas fa-mobile-alt"></i>'}</div>
+                        <div class="app-info">
+                            <div class="app-name">
+                                ${app.name} ${app.pinned ? '<i class="fas fa-thumbtack pinned-icon"></i>' : ''}
+                                <span class="category-tag">${categoryNames[app.category] || 'تطبيق'}</span>
+                            </div>
+                            <div class="stars">${stars} <span class="rating-text">(${avgRating})</span></div>
+                            <div class="short-desc">${shortDesc}</div>
+                        </div>
+                    </div>
+                    <div class="app-card-footer">
+                        <span class="downloads"><i class="fas fa-download"></i> ${(app.downloads || 0).toLocaleString()}</span>
+                        <span class="rating-count"><i class="fas fa-comment"></i> ${app.rating_count || 0} تقييم</span>
+                        <i class="fas fa-heart favorite-icon ${isFavorite ? 'fas' : 'far'}" style="color:#dc3545; cursor:pointer;" onclick="event.stopPropagation(); toggleFavorite(${app.id})"></i>
+                    </div>
+                </div>
+            `
+        }).join('')
+    }
+    
+    function renderAudio() {
+        const container = document.getElementById('audioGrid')
+        if (!allAudio.length) { container.innerHTML = '<div class="loading"><i class="fas fa-folder-open"></i> لا توجد مقاطع صوتية</div>'; return }
+        
+        container.innerHTML = allAudio.map(audio => `
+            <div class="audio-card">
+                <div class="audio-header">
+                    <div class="audio-icon"><i class="fas fa-headphones"></i></div>
+                    <div>
+                        <div class="audio-name">${audio.name}</div>
+                        <div class="audio-desc">${audio.description || 'مقطع صوتي'}</div>
+                    </div>
+                </div>
+                <audio controls><source src="${audio.file_url}" type="audio/mpeg"></audio>
+                <button class="audio-download" onclick="downloadAudio('${audio.file_url}')"><i class="fas fa-download"></i> تحميل المقطع</button>
+            </div>
+        `).join('')
+    }
+    
+    window.downloadAudio = (url) => { window.open(url, '_blank'); showToast('جاري التحميل', 'success') }
+    window.toggleFavorite = toggleFavorite
+    
+    window.sortApps = (type) => {
+        currentSort = type
+        loadApps().then(() => renderApps())
+    }
+    
+    window.filterByCategory = (category) => {
+        currentCategory = category
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            if (btn.dataset.category === category) btn.classList.add('active')
+            else btn.classList.remove('active')
+        })
+        loadApps().then(() => renderApps())
+    }
+    
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => filterByCategory(btn.dataset.category))
+    })
+    
+    window.switchTab = (tab) => {
+        currentTab = tab
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'))
+        if (tab === 'apps') document.querySelector('.tab-btn:first-child').classList.add('active')
+        else document.querySelector('.tab-btn:last-child').classList.add('active')
+        document.getElementById('appsGrid').style.display = tab === 'apps' ? 'grid' : 'none'
+        document.getElementById('audioGrid').style.display = tab === 'audio' ? 'grid' : 'none'
+        if (tab === 'apps') renderApps()
+        else renderAudio()
+    }
+    
+    function renderCurrentTab() {
+        if (currentTab === 'apps') renderApps()
+        else renderAudio()
+    }
+    
+    window.filterContent = () => {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase()
+        if (currentTab === 'apps') {
+            const filtered = allApps.filter(app => app.name.toLowerCase().includes(searchTerm))
+            const container = document.getElementById('appsGrid')
+            if (!filtered.length) { container.innerHTML = '<div class="loading"><i class="fas fa-search"></i> لا توجد نتائج</div>'; return }
+            container.innerHTML = filtered.map(app => ``).join('')
+        } else {
+            const filtered = allAudio.filter(audio => audio.name.toLowerCase().includes(searchTerm))
+            const container = document.getElementById('audioGrid')
+            if (!filtered.length) { container.innerHTML = '<div class="loading"><i class="fas fa-search"></i> لا توجد نتائج</div>'; return }
+            container.innerHTML = filtered.map(audio => ``).join('')
+        }
+    }
+    
+    window.loginWithPassword = async () => {
+        const email = document.getElementById('loginEmail').value
+        const password = document.getElementById('loginPassword').value
+        if (!email || !password) { showToast('الرجاء إدخال البريد وكلمة السر', 'error'); return }
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) { showToast(error.message, 'error'); return }
+        closeLoginModal(); window.location.reload()
+    }
+    
+    window.register = async () => {
+        const email = document.getElementById('loginEmail').value
+        const password = document.getElementById('loginPassword').value
+        if (!email || !password) { showToast('الرجاء إدخال البريد وكلمة السر', 'error'); return }
+        const { error } = await supabase.auth.signUp({ email, password })
+        if (error) { showToast(error.message, 'error'); return }
+        showToast('تم إنشاء الحساب يمكنك الدخول الآن', 'success')
+        closeLoginModal()
+    }
+    
+    window.showForgotPassword = () => {
+        closeLoginModal()
+        document.getElementById('forgotModal').style.display = 'flex'
+    }
+    
+    window.closeForgotModal = () => {
+        document.getElementById('forgotModal').style.display = 'none'
+    }
+    
+    window.resetPassword = async () => {
+        const email = document.getElementById('resetEmail').value
+        if (!email) { showToast('الرجاء إدخال البريد الإلكتروني', 'error'); return }
+        const { error } = await supabase.auth.resetPasswordForEmail(email)
+        if (error) { showToast(error.message, 'error'); return }
+        showToast('تم إرسال رابط استعادة كلمة السر إلى بريدك', 'success')
+        closeForgotModal()
+    }
+    
+    window.logout = async () => { await supabase.auth.signOut(); window.location.reload() }
+    window.showLoginModal = () => { document.getElementById('loginModal').style.display = 'flex' }
+    window.closeLoginModal = () => { document.getElementById('loginModal').style.display = 'none' }
+    window.toggleDarkMode = () => { document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')) }
+    
+    if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark')
+    
+    loadSettings()
+    checkUser()
+</script>
+</body>
+</html>

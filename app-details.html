@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>تفاصيل التطبيق - متجر فريق مجالس الصالحين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
+            --bg-card: #ffffff;
+            --text-primary: #1a2a3a;
+            --text-secondary: #6c757d;
+            --header-bg: linear-gradient(135deg, #1e3a2f, #2d5a4a);
+            --shadow: 0 5px 20px rgba(0,0,0,0.08);
+            --border: #eee;
+            --gold: #ffc107;
+        }
+        
+        body.dark {
+            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --bg-card: #1f1f2f;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --header-bg: linear-gradient(135deg, #0f3460, #1a1a2e);
+            --shadow: 0 5px 20px rgba(0,0,0,0.3);
+            --border: #2a2a3a;
+        }
+        
+        body { font-family: 'Cairo', sans-serif; background: var(--bg-primary); transition: all 0.3s ease; }
+        
+        .navbar { background: var(--header-bg); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .navbar a { color: white; text-decoration: none; font-size: 18px; font-weight: 600; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        
+        /* App Header */
+        .app-header { background: var(--bg-card); border-radius: 25px; padding: 30px; margin-bottom: 30px; box-shadow: var(--shadow); display: flex; gap: 25px; flex-wrap: wrap; }
+        .app-icon { width: 120px; height: 120px; border-radius: 25px; background: linear-gradient(135deg, #2d5a4a, #1e3a2f); display: flex; align-items: center; justify-content: center; font-size: 55px; color: white; overflow: hidden; flex-shrink: 0; }
+        .app-icon img { width: 100%; height: 100%; border-radius: 25px; object-fit: cover; }
+        .app-info { flex: 1; }
+        .app-name { font-size: 28px; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .category-tag { font-size: 14px; background: var(--border); padding: 4px 12px; border-radius: 20px; color: var(--text-secondary); }
+        .app-meta { display: flex; gap: 20px; flex-wrap: wrap; margin: 15px 0; color: var(--text-secondary); }
+        
+        /* Rating Large */
+        .rating-large { display: flex; align-items: center; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
+        .stars-large { color: var(--gold); font-size: 32px; }
+        .stars-large i { margin: 0 2px; }
+        .rating-percent { background: #2d5a4a; color: white; padding: 5px 12px; border-radius: 50px; font-weight: 600; }
+        .rating-count { color: var(--text-secondary); font-size: 14px; }
+        
+        .download-btn { background: linear-gradient(135deg, #2d5a4a, #1e3a2f); color: white; border: none; padding: 15px 35px; border-radius: 60px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 10px; display: inline-flex; align-items: center; gap: 10px; }
+        .download-btn:hover { transform: scale(1.05); }
+        
+        /* Share Buttons */
+        .share-buttons { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .share-btn { padding: 8px 15px; border-radius: 50px; border: none; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+        .share-wa { background: #25D366; color: white; }
+        .share-fb { background: #1877F2; color: white; }
+        .share-tw { background: #1DA1F2; color: white; }
+        
+        /* Admin Actions */
+        .admin-actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .admin-btn { background: transparent; border: 2px solid var(--border); padding: 8px 20px; border-radius: 50px; cursor: pointer; font-family: 'Cairo', sans-serif; font-weight: 600; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .admin-btn.edit { border-color: var(--gold); color: var(--gold); }
+        .admin-btn.edit:hover { background: var(--gold); color: #1e3a2f; }
+        .admin-btn.delete { border-color: #dc3545; color: #dc3545; }
+        .admin-btn.delete:hover { background: #dc3545; color: white; }
+        .admin-btn.pin { border-color: #2d5a4a; color: #2d5a4a; }
+        .admin-btn.pin:hover { background: #2d5a4a; color: white; }
+        
+        /* Sections */
+        .section { background: var(--bg-card); border-radius: 25px; padding: 25px; margin-bottom: 25px; box-shadow: var(--shadow); }
+        .section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #1e3a2f; }
+        .description { line-height: 1.8; color: var(--text-primary); font-size: 16px; }
+        .description p { margin-bottom: 15px; }
+        
+        /* Screenshots */
+        .screenshots { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; }
+        .screenshot { width: 200px; height: 350px; border-radius: 20px; object-fit: cover; box-shadow: var(--shadow); cursor: pointer; transition: 0.3s; }
+        .screenshot:hover { transform: scale(1.02); }
+        
+        /* Similar Apps */
+        .similar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+        .similar-card { background: var(--bg-card); border-radius: 15px; padding: 15px; display: flex; gap: 12px; cursor: pointer; transition: 0.3s; border: 1px solid var(--border); }
+        .similar-card:hover { transform: translateY(-3px); }
+        .similar-icon { width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, #2d5a4a, #1e3a2f); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; overflow: hidden; }
+        .similar-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .similar-name { font-weight: 700; font-size: 14px; }
+        .similar-rating { color: var(--gold); font-size: 11px; }
+        
+        /* Comments */
+        .comment-item { border-bottom: 1px solid var(--border); padding: 15px 0; }
+        .comment-item:last-child { border-bottom: none; }
+        .comment-header { display: flex; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 10px; }
+        .comment-user { font-weight: 700; color: #1e3a2f; display: flex; align-items: center; gap: 8px; }
+        .comment-stars { color: var(--gold); font-size: 14px; }
+        .comment-text { color: var(--text-primary); margin-top: 5px; line-height: 1.6; }
+        .delete-comment { color: #dc3545; cursor: pointer; font-size: 12px; margin-right: 10px; }
+        
+        /* Add Comment */
+        .add-comment { margin-top: 20px; padding-top: 20px; border-top: 2px dashed var(--border); }
+        .add-comment textarea { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 12px; font-family: 'Cairo', sans-serif; resize: vertical; margin: 10px 0; background: var(--bg-card); color: var(--text-primary); }
+        .star-rating { display: flex; gap: 8px; margin: 10px 0; direction: ltr; }
+        .star-rating i { font-size: 32px; cursor: pointer; color: #ddd; transition: all 0.2s; }
+        .star-rating i:hover, .star-rating i.active { color: var(--gold); }
+        .btn-submit { background: #2d5a4a; color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; font-family: 'Cairo', sans-serif; font-weight: 600; }
+        
+        .loading { text-align: center; padding: 40px; color: var(--text-secondary); }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--bg-card); border-radius: 25px; padding: 30px; max-width: 500px; width: 90%; text-align: center; }
+        .modal-content input, .modal-content textarea { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid var(--border); border-radius: 12px; font-family: 'Cairo', sans-serif; background: var(--bg-card); color: var(--text-primary); }
+        .modal-content button { background: #2d5a4a; color: white; border: none; padding: 10px 20px; border-radius: 50px; margin: 5px; cursor: pointer; }
+        
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #1e3a2f; color: white; padding: 12px 20px; border-radius: 50px; z-index: 9999; animation: fadeInUp 0.3s ease; }
+        .toast-error { background: #dc3545; }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; text-align: center; }
+            .app-header { flex-direction: column; align-items: center; text-align: center; }
+            .app-meta { justify-content: center; }
+            .rating-large { justify-content: center; }
+            .admin-actions { justify-content: center; }
+            .stars-large { font-size: 24px; }
+            .star-rating i { font-size: 28px; }
+            .similar-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="index.html"><i class="fas fa-arrow-right"></i> العودة للمتجر</a>
+    <span><i class="fas fa-mosque"></i> متجر فريق مجالس الصالحين</span>
+</div>
+
+<div class="container" id="container">
+    <div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+</div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-edit"></i> تعديل التطبيق</h3>
+        <input type="text" id="editName" placeholder="اسم التطبيق">
+        <textarea id="editDesc" rows="4" placeholder="وصف التطبيق"></textarea>
+        <input type="text" id="editShortDesc" placeholder="وصف قصير">
+        <select id="editCategory">
+            <option value="dini">ديني</option>
+            <option value="educational">تعليمي</option>
+            <option value="tools">أدوات</option>
+            <option value="games">ألعاب</option>
+        </select>
+        <input type="text" id="editVersion" placeholder="الإصدار">
+        <input type="text" id="editFileSize" placeholder="الحجم MB">
+        <input type="text" id="editFileUrl" placeholder="رابط APK">
+        <div>
+            <button onclick="saveEdit()"><i class="fas fa-save"></i> حفظ</button>
+            <button onclick="closeEditModal()" style="background:#ccc;"><i class="fas fa-times"></i> إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    
+    const supabaseUrl = 'https://mkbicibgbbuphzkbztgz.supabase.co'
+    const supabaseKey = 'sb_publishable_7TRSLYRvjwCtyg4sLt1vZA_riJg5r_8'
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    
+    let currentUser = null
+    let currentApp = null
+    let isAdmin = false
+    let selectedRating = 0
+    let similarApps = []
+    
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div')
+        toast.className = `toast ${type === 'error' ? 'toast-error' : ''}`
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`
+        document.body.appendChild(toast)
+        setTimeout(() => toast.remove(), 3000)
+    }
+    
+    const urlParams = new URLSearchParams(window.location.search)
+    const appId = urlParams.get('id')
+    
+    async function loadApp() {
+        if (!appId) { window.location.href = 'index.html'; return }
+        const { data: app, error } = await supabase.from('apps').select('*').eq('id', appId).single()
+        if (error || !app) { document.getElementById('container').innerHTML = '<div class="loading">التطبيق غير موجود</div>'; return }
+        currentApp = app
+        
+        // Load similar apps
+        const { data: similar } = await supabase.from('apps').select('*').eq('category', app.category).neq('id', appId).limit(3)
+        similarApps = similar || []
+        
+        const { data: images } = await supabase.from('app_images').select('image_url').eq('app_id', appId)
+        const { data: comments } = await supabase.from('comments').select('*').eq('app_id', appId).order('created_at', { ascending: false })
+        displayApp(app, images || [], comments || [])
+    }
+    
+    function shareApp(platform) {
+        const url = window.location.href
+        const text = `تطبيق ${currentApp.name} - حمله الآن من متجر مجالس الصالحين`
+        if (platform === 'wa') window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank')
+        else if (platform === 'fb') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank')
+        else if (platform === 'tw') window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank')
+    }
+    
+    function displayApp(app, images, comments) {
+        const avgRating = app.rating_count > 0 ? (app.rating_sum / app.rating_count).toFixed(1) : 0
+        const ratingPercent = app.rating_count > 0 ? ((app.rating_sum / app.rating_count) * 20).toFixed(0) : 0
+        let stars = ''
+        for (let i = 1; i <= 5; i++) stars += `<i class="fas fa-star${i <= Math.round(avgRating) ? '' : '-o'}"></i>`
+        
+        let screenshotsHtml = ''
+        images.forEach(img => { screenshotsHtml += `<img src="${img.image_url}" class="screenshot" alt="صورة" onclick="window.open(this.src)">` })
+        
+        let commentsHtml = ''
+        comments.forEach(c => {
+            let commentStars = ''
+            for (let i = 1; i <= 5; i++) commentStars += `<i class="fas fa-star${i <= c.rating ? '' : '-o'}"></i>`
+            const deleteBtn = isAdmin ? `<span class="delete-comment" onclick="deleteComment(${c.id})"><i class="fas fa-trash"></i> حذف</span>` : ''
+            commentsHtml += `
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-user"><i class="fas fa-user"></i> ${c.user_name || c.user_email || 'زائر'} ${deleteBtn}</span>
+                        <div class="comment-stars">${commentStars}</div>
+                    </div>
+                    <div class="comment-text">${c.comment}</div>
+                </div>
+            `
+        })
+        
+        let similarHtml = ''
+        if (similarApps.length > 0) {
+            similarHtml = `
+                <div class="section">
+                    <div class="section-title"><i class="fas fa-layer-group"></i> تطبيقات مشابهة</div>
+                    <div class="similar-grid">
+                        ${similarApps.map(app2 => {
+                            const avgRating2 = app2.rating_count > 0 ? (app2.rating_sum / app2.rating_count).toFixed(1) : 0
+                            let stars2 = ''
+                            for (let i = 1; i <= 5; i++) stars2 += `<i class="fas fa-star${i <= Math.round(avgRating2) ? '' : '-o'}"></i>`
+                            return `
+                                <div class="similar-card" onclick="window.location.href='app-details.html?id=${app2.id}'">
+                                    <div class="similar-icon">${app2.icon_url ? `<img src="${app2.icon_url}">` : '<i class="fas fa-mobile-alt"></i>'}</div>
+                                    <div>
+                                        <div class="similar-name">${app2.name}</div>
+                                        <div class="similar-rating">${stars2}</div>
+                                    </div>
+                                </div>
+                            `
+                        }).join('')}
+                    </div>
+                </div>
+            `
+        }
+        
+        const categoryNames = { dini: 'ديني', educational: 'تعليمي', tools: 'أدوات', games: 'ألعاب' }
+        
+        let adminButtons = ''
+        if (isAdmin) {
+            adminButtons = `
+                <div class="admin-actions">
+                    <button class="admin-btn edit" onclick="openEditModal()"><i class="fas fa-edit"></i> تعديل</button>
+                    <button class="admin-btn delete" onclick="deleteApp()"><i class="fas fa-trash"></i> حذف</button>
+                    <button class="admin-btn pin" onclick="togglePin()"><i class="fas fa-thumbtack"></i> ${app.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>
+                </div>
+            `
+        }
+        
+        const shortDesc = app.short_description || app.description?.substring(0, 100) || 'لا يوجد وصف'
+        
+        const html = `
+            <div class="app-header">
+                <div class="app-icon">${app.icon_url ? `<img src="${app.icon_url}">` : '<i class="fas fa-mobile-alt"></i>'}</div>
+                <div class="app-info">
+                    <div class="app-name">
+                        ${app.name} ${app.pinned ? '<i class="fas fa-thumbtack" style="color:#ffc107;"></i>' : ''}
+                        <span class="category-tag">${categoryNames[app.category] || 'تطبيق'}</span>
+                    </div>
+                    <div class="app-meta">
+                        <span><i class="fas fa-code-branch"></i> الإصدار ${app.version || '1.0'}</span>
+                        <span><i class="fas fa-hdd"></i> ${app.file_size || 'غير محدد'} MB</span>
+                        <span><i class="fas fa-download"></i> ${(app.downloads || 0).toLocaleString()} تحميل</span>
+                    </div>
+                    <div class="rating-large">
+                        <div class="stars-large">${stars}</div>
+                        <div class="rating-percent">${ratingPercent}%</div>
+                        <div class="rating-count">(${app.rating_count || 0} تقييم)</div>
+                    </div>
+                    <button class="download-btn" onclick="downloadApp()"><i class="fas fa-download"></i> تحميل التطبيق</button>
+                    <div class="share-buttons">
+                        <button class="share-btn share-wa" onclick="shareApp('wa')"><i class="fab fa-whatsapp"></i> مشاركة</button>
+                        <button class="share-btn share-fb" onclick="shareApp('fb')"><i class="fab fa-facebook"></i> مشاركة</button>
+                        <button class="share-btn share-tw" onclick="shareApp('tw')"><i class="fab fa-twitter"></i> تغريدة</button>
+                    </div>
+                    ${adminButtons}
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-title"><i class="fas fa-align-right"></i> وصف سريع</div>
+                <div class="description"><p>${shortDesc}</p></div>
+            </div>
+            <div class="section">
+                <div class="section-title"><i class="fas fa-info-circle"></i> الوصف الكامل</div>
+                <div class="description">${(app.description || 'لا يوجد وصف').replace(/\n/g, '<br>')}</div>
+            </div>
+            ${screenshotsHtml ? `<div class="section"><div class="section-title"><i class="fas fa-images"></i> صور التطبيق</div><div class="screenshots">${screenshotsHtml}</div></div>` : ''}
+            ${similarHtml}
+            <div class="section">
+                <div class="section-title"><i class="fas fa-comments"></i> التعليقات والتقييمات (${comments.length})</div>
+                <div id="commentsList">${commentsHtml || '<p>لا توجد تعليقات بعد. كن أول من يقيّم</p>'}</div>
+                ${currentUser ? `
+                <div class="add-comment">
+                    <h4><i class="fas fa-star"></i> أضف تقييمك</h4>
+                    <div class="star-rating" id="starRating">
+                        <i class="far fa-star" data-rating="1"></i>
+                        <i class="far fa-star" data-rating="2"></i>
+                        <i class="far fa-star" data-rating="3"></i>
+                        <i class="far fa-star" data-rating="4"></i>
+                        <i class="far fa-star" data-rating="5"></i>
+                    </div>
+                    <textarea id="commentText" rows="3" placeholder="اكتب تعليقك"></textarea>
+                    <button class="btn-submit" onclick="submitComment()"><i class="fas fa-paper-plane"></i> إرسال التقييم</button>
+                </div>
+                ` : '<p style="margin-top:15px;"><a href="#" onclick="showLoginModal()">سجل الدخول</a> لتضيف تقييمك</p>'}
+            </div>
+        `
+        document.getElementById('container').innerHTML = html
+        initStarRating()
+    }
+    
+    function initStarRating() {
+        const stars = document.querySelectorAll('#starRating i')
+        if (!stars.length) return
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating)
+                stars.forEach((s, i) => { s.className = i < selectedRating ? 'fas fa-star' : 'far fa-star' })
+            })
+        })
+    }
+    
+    window.downloadApp = async () => {
+        if (!currentApp) return
+        const newDownloads = (currentApp.downloads || 0) + 1
+        await supabase.from('apps').update({ downloads: newDownloads }).eq('id', currentApp.id)
+        currentApp.downloads = newDownloads
+        window.open(currentApp.file_url, '_blank')
+        showToast('جاري التحميل شكراً لك', 'success')
+    }
+    
+    window.submitComment = async () => {
+        if (!selectedRating) { showToast('الرجاء اختيار تقييم بالنجوم', 'error'); return }
+        const commentText = document.getElementById('commentText').value
+        if (!commentText) { showToast('الرجاء كتابة تعليق', 'error'); return }
+        const { error } = await supabase.from('comments').insert([{ app_id: currentApp.id, user_email: currentUser.email, user_name: currentUser.email.split('@')[0], comment: commentText, rating: selectedRating }])
+        if (error) { showToast(error.message, 'error'); return }
+        const newRatingSum = (currentApp.rating_sum || 0) + selectedRating
+        const newRatingCount = (currentApp.rating_count || 0) + 1
+        await supabase.from('apps').update({ rating_sum: newRatingSum, rating_count: newRatingCount }).eq('id', currentApp.id)
+        showToast('تم إضافة تقييمك شكراً لك', 'success')
+        setTimeout(() => window.location.reload(), 1000)
+    }
+    
+    window.deleteComment = async (commentId) => {
+        if (!confirm('هل تريد حذف هذا التعليق؟')) return
+        const { error } = await supabase.from('comments').delete().eq('id', commentId)
+        if (error) { showToast(error.message, 'error'); return }
+        showToast('تم حذف التعليق', 'success')
+        setTimeout(() => window.location.reload(), 1000)
+    }
+    
+    window.openEditModal = () => {
+        document.getElementById('editName').value = currentApp.name || ''
+        document.getElementById('editDesc').value = currentApp.description || ''
+        document.getElementById('editShortDesc').value = currentApp.short_description || ''
+        document.getElementById('editCategory').value = currentApp.category || 'dini'
+        document.getElementById('editVersion').value = currentApp.version || '1.0'
+        document.getElementById('editFileSize').value = currentApp.file_size || ''
+        document.getElementById('editFileUrl').value = currentApp.file_url || ''
+        document.getElementById('editModal').style.display = 'flex'
+    }
+    
+    window.closeEditModal = () => { document.getElementById('editModal').style.display = 'none' }
+    
+    window.saveEdit = async () => {
+        const updates = {
+            name: document.getElementById('editName').value,
+            description: document.getElementById('editDesc').value,
+            short_description: document.getElementById('editShortDesc').value,
+            category: document.getElementById('editCategory').value,
+            version: document.getElementById('editVersion').value,
+            file_size: document.getElementById('editFileSize').value,
+            file_url: document.getElementById('editFileUrl').value
+        }
+        const { error } = await supabase.from('apps').update(updates).eq('id', currentApp.id)
+        if (error) { showToast('خطأ ' + error.message, 'error')
+        } else { showToast('تم التعديل بنجاح', 'success'); closeEditModal(); setTimeout(() => window.location.reload(), 1000) }
+    }
+    
+    window.deleteApp = async () => {
+        if (!confirm('هل أنت متأكد من حذف هذا التطبيق نهائياً')) return
+        const { data: images } = await supabase.from('app_images').select('image_url').eq('app_id', currentApp.id)
+        for (let img of images || []) {
+            const path = img.image_url.split('/public/apps/')[1]
+            if (path) await supabase.storage.from('apps').remove([path])
+        }
+        await supabase.from('comments').delete().eq('app_id', currentApp.id)
+        await supabase.from('app_images').delete().eq('app_id', currentApp.id)
+        const { error } = await supabase.from('apps').delete().eq('id', currentApp.id)
+        if (error) { showToast('خطأ ' + error.message, 'error')
+        } else { showToast('تم حذف التطبيق بنجاح', 'success'); setTimeout(() => { window.location.href = 'index.html' }, 1500) }
+    }
+    
+    window.togglePin = async () => {
+        const newPinned = !currentApp.pinned
+        const { error } = await supabase.from('apps').update({ pinned: newPinned }).eq('id', currentApp.id)
+        if (error) { showToast('خطأ ' + error.message, 'error')
+        } else { showToast(newPinned ? 'تم تثبيت التطبيق' : 'تم إلغاء التثبيت', 'success'); setTimeout(() => window.location.reload(), 500) }
+    }
+    
+    window.shareApp = shareApp
+    window.showLoginModal = () => { alert('الرجاء تسجيل الدخول أولاً من الصفحة الرئيسية') }
+    
+    async function checkUser() { 
+        const { data: { user } } = await supabase.auth.getUser()
+        currentUser = user
+        if (user) {
+            const { data: admin } = await supabase.from('admins').select('email').eq('email', user.email).single()
+            isAdmin = !!admin
+        }
+    }
+    
+    checkUser(); loadApp()
+</script>
+</body>
+</html>
